@@ -1,7 +1,9 @@
-class Racker
-  def call(env)
-    [200, { 'Content-Type' => 'text/plain' }, ['Something happens!']]
-  end
-end
+# frozen_string_literal: true
 
-run Racker.new
+require './middlewares/index'
+require 'haml'
+
+use Rack::Reloader
+use Rack::Static, :urls => ['/assets/css', '/assets/images', '/assets/js', '/assets']
+
+run Middlewares::Racker.new

@@ -1,17 +1,71 @@
+GIT
+  remote: git@github.com:krossovok83/codebreaker.git
+  revision: 035fa86cdf4afd560b818ed1f0baade221e74ef4
+  branch: main
+  specs:
+    codebreaker (0.1.0)
+      fasterer (~> 0.9.0)
+      overcommit (~> 0.58.0)
+      rake (~> 13.0)
+      rubocop (~> 1.21)
+
 GEM
   remote: https://rubygems.org/
   specs:
+    ast (2.4.2)
+    childprocess (4.1.0)
+    colorize (0.8.1)
+    fasterer (0.9.0)
+      colorize (~> 0.7)
+      ruby_parser (>= 3.14.1)
+    haml (5.2.2)
+      temple (>= 0.8.0)
+      tilt
+    iniparse (1.5.0)
     nio4r (2.5.8)
+    overcommit (0.58.0)
+      childprocess (>= 0.6.3, < 5)
+      iniparse (~> 1.4)
+      rexml (~> 3.2)
+    parallel (1.21.0)
+    parser (3.1.0.0)
+      ast (~> 2.4.1)
     puma (5.5.2)
       nio4r (~> 2.0)
+    rainbow (3.0.0)
     rake (13.0.6)
+    regexp_parser (2.2.0)
+    rexml (3.2.5)
+    rubocop (1.24.1)
+      parallel (~> 1.10)
+      parser (>= 3.0.0.0)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml
+      rubocop-ast (>= 1.15.1, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 3.0)
+    rubocop-ast (1.15.1)
+      parser (>= 3.0.1.1)
+    rubocop-rspec (2.6.0)
+      rubocop (~> 1.19)
+    ruby-progressbar (1.11.0)
+    ruby_parser (3.18.1)
+      sexp_processor (~> 4.16)
+    sexp_processor (4.16.0)
+    temple (0.8.2)
+    tilt (2.0.10)
+    unicode-display_width (2.1.0)
 
 PLATFORMS
   x86_64-darwin-19
 
 DEPENDENCIES
-  puma
-  rake
+  codebreaker!
+  haml (~> 5.2, >= 5.2.2)
+  puma (~> 5.5.2)
+  rake (~> 13.0.6)
+  rubocop-rspec (~> 2.6.0)
 
 BUNDLED WITH
    2.2.32
