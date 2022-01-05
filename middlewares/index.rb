@@ -1,9 +1,15 @@
 # frozen_string_literal: true
 
 module Middlewares
-  class Racker
+  class Welcome
     def call(env)
-      Rack::Response.new(render('home.html.haml')).finish
+      request = Rack::Request.new(env)
+      case request.path
+      when '/' then Rack::Response.new(render('home.html.haml')).finish
+      when '/statistics' then Rack::Response.new(render('statistics.html.haml')).finish
+      when '/rules' then Rack::Response.new(render('rules.html.haml')).finish
+      else respond('Not Found', 404)
+      end
     end
 
     private

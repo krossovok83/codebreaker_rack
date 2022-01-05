@@ -6,4 +6,4 @@ require 'haml'
 use Rack::Reloader
 use Rack::Static, :urls => ['/assets/css', '/assets/images', '/assets/js', '/assets']
 
-run Middlewares::Racker.new
+run Middlewares::Welcome.new
