@@ -15,6 +15,7 @@ module Middlewares
       when '/statistics' then Rack::Response.new(render('statistics.html.haml'))
       when '/rules' then Rack::Response.new(render('rules.html.haml'))
       when '/create_game' then create_game
+      when '/submit_answer' then submit_answer
       else Rack::Response.new('Not Found', 404)
       end
     end
@@ -33,7 +34,14 @@ module Middlewares
     end
 
     def game
-      @request.session.key?('game') ? Rack::Response.new(render('game.html.haml')) : redirect
+      return win if @request.session[:win] == 'true'
+
+      return lose if @request.session[:win] == 'false'
+
+      if @request.session.key?('game') && @request.session['game'].attempts_left.positive?
+        Rack::Response.new(render('game.html.haml'))
+      else redirect
+      end
     end
 
     def create_game
@@ -43,6 +51,7 @@ module Middlewares
       @request.session[:level] = @request.params['level']
       @request.session[:attempts] = attempts
       @request.session[:hints] = hints
+      @request.session[:answer] = %w[x x x x]
       redirect('game')
     end
 
@@ -51,6 +60,29 @@ module Middlewares
       when 'simple' then [15, 2]
       when 'middle' then [10, 1]
       else [5, 0]
+      end
+    end
+
+    def submit_answer
+      @request.session['game'].compare(@request.params['number'])
+      while @request.session['game'].instance_variable_get("@response").size != 4
+        @request.session['game'].instance_variable_get("@response") << "x"
+      end
+      @request.session[:answer] = @request.session['game'].instance_variable_get("@response")
+      win || lose || redirect('game')
+    end
+
+    def win
+      if @request.session['game'].instance_variable_get("@response") == %w[+ + + +]
+        @request.session[:win] = 'true'
+        Rack::Response.new(render('win.html.haml'))
+      end
+    end
+
+    def lose
+      unless @request.session['game'].attempts_left.positive?
+        @request.session[:win] = 'false'
+        Rack::Response.new(render('lose.html.haml'))
       end
     end
   end
