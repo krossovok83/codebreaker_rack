@@ -21,7 +21,7 @@
               %p.lead.text-white-70
                 Try to guess 4-digit number, that consists of numbers in a range from 1 to 6.
             %hr.mb-4/
-            %form{action: "/game", method: "get"}
+            %form{action: "/create_game", method: "post"}
               .form-group
                 %label.lead.label{for: "player_name"} Player's name:
                 %input#player_name.form-control{autofocus: "", name: "player_name", pattern: "^[\\w\\u0400-\\u04ff]{3,20}$", placeholder: "Your name", required: ""}/

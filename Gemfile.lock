@@ -14,6 +14,7 @@ GEM
   specs:
     ast (2.4.2)
     childprocess (4.1.0)
+    coderay (1.1.3)
     colorize (0.8.1)
     fasterer (0.9.0)
       colorize (~> 0.7)
@@ -22,6 +23,7 @@ GEM
       temple (>= 0.8.0)
       tilt
     iniparse (1.5.0)
+    method_source (1.0.0)
     nio4r (2.5.8)
     overcommit (0.58.0)
       childprocess (>= 0.6.3, < 5)
@@ -30,8 +32,12 @@ GEM
     parallel (1.21.0)
     parser (3.1.0.0)
       ast (~> 2.4.1)
+    pry (0.14.1)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
     puma (5.5.2)
       nio4r (~> 2.0)
+    rack (2.2.3)
     rainbow (3.0.0)
     rake (13.0.6)
     regexp_parser (2.2.0)
@@ -63,7 +69,9 @@ PLATFORMS
 DEPENDENCIES
   codebreaker!
   haml (~> 5.2, >= 5.2.2)
+  pry (~> 0.14.1)
   puma (~> 5.5.2)
+  rack
   rake (~> 13.0.6)
   rubocop-rspec (~> 2.6.0)
 
