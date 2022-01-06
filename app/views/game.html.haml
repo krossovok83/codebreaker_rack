@@ -21,7 +21,7 @@
             %p.lead.text-white-70
               Hello, #{@request.session['name']}
               %br/
-              Code - #{@request.session['game'].code}
+              Code - #{@request.session['game'].code.join}
               %br/
               Try to guess 4-digit number, that consists of numbers in a range from 1 to 6.
             %hr.mb-4/
@@ -46,8 +46,6 @@
                   %input.form-control.guess_input{autocomplete: "off", name: "number", pattern: "^[1-6]{4}$", placeholder: "0000", required: ""}/
               .form-group.guess_markers_list
                 #guess_marker
-                  -#%button.btn.btn-success.marks{disabled: "disabled", type: "button"} +
-                  -#%button.btn.btn-primary.marks{disabled: "disabled", type: "button"} -
                   %button.btn.btn-danger.marks{disabled: "disabled", type: "button", id: "answer_1"} #{@request.session['answer'][0]}
                   %button.btn.btn-danger.marks{disabled: "disabled", type: "button", id: "answer_2"} #{@request.session['answer'][1]}
                   %button.btn.btn-danger.marks{disabled: "disabled", type: "button", id: "answer_3"} #{@request.session['answer'][2]}

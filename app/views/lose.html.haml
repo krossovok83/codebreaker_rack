@@ -39,10 +39,10 @@
                     Oops, NAME! You lose the game!
                   %h4.text-white
                     The code was
-                    %strong 1553
+                    %strong #{@request.session['game'].code.join}
                 %img.img-fluid{alt: "You lose the game!", src: "../../assets/images/lost.gif"}/
             %hr.mb-4/
-            %a.btn.btn-primary.btn-lg{href: "#", role: "button"}
+            %a.btn.btn-primary.btn-lg{href: "/play_again", role: "button"}
               Play again!
-            %a.btn.btn-success.btn-lg.float-right{href: "#", role: "button"}
+            %a.btn.btn-success.btn-lg.float-right{href: "/statistics", role: "button"}
               Statistics

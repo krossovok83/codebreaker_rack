@@ -16,6 +16,7 @@ module Middlewares
       when '/rules' then Rack::Response.new(render('rules.html.haml'))
       when '/create_game' then create_game
       when '/submit_answer' then submit_answer
+      when '/play_again' then play_again
       else Rack::Response.new('Not Found', 404)
       end
     end
@@ -84,6 +85,11 @@ module Middlewares
         @request.session[:win] = 'false'
         Rack::Response.new(render('lose.html.haml'))
       end
+    end
+
+    def play_again
+      @request.session.clear
+      redirect
     end
   end
 end
