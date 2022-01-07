@@ -84,6 +84,7 @@ module Middlewares
       return unless @request.session['game'].instance_variable_get('@response') == %w[+ + + +]
 
       @request.session[:win] = 'true'
+      save_game
       Rack::Response.new(render('win.html.haml'))
     end
 
@@ -105,6 +106,31 @@ module Middlewares
       one_hint = @request.session[:game].hint
       @request.session[:hint][@request.session[:hint].index('x')] = one_hint
       redirect('game')
+    end
+
+    def save_game
+      return if @request.session['saved'] == 'true'
+
+      @request.session['saved'] = 'true'
+      @request.session['game'].save(@request.session['name'], @request.session['level'])
+    end
+
+    def statistics
+      return [[]] if CodeBreaker.stats.nil?
+
+      rows(CodeBreaker.stats.sort_by { |i| [i[1][:attempts], i[1][:attempt_used]] }).each { |i| i.delete_at(4) }
+    end
+
+    def rows(hash)
+      rows = []
+      hash.each do |breaker|
+        row = []
+        row << (hash.find_index(breaker) + 1)
+        row << breaker.first.to_s
+        breaker.last.each { |param| row << param.last }
+        rows << row
+      end
+      rows
     end
   end
 end

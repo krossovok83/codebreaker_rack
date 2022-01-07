@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:krossovok83/codebreaker.git
-  revision: 035fa86cdf4afd560b818ed1f0baade221e74ef4
+  revision: e66d554e67a02f12cd1f25aa29a60e5e70a029a5
   branch: main
   specs:
     codebreaker (0.1.0)
