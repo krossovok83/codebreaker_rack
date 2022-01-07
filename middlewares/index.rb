@@ -2,21 +2,27 @@
 
 module Middlewares
   class Welcome
-    def initialize(app)
-      @app = app
+    def self.call(env)
+      new(env).response(env).finish
     end
 
-    def call(env)
-      request = Rack::Request.new(env)
-      case request.path
-      when '/' then Rack::Response.new(render('home.html.haml')).finish
-      when '/statistics' then Rack::Response.new(render('statistics.html.haml')).finish
-      when '/rules' then Rack::Response.new(render('rules.html.haml')).finish
-      when '/game'
+    def initialize(env)
+      @request = Rack::Request.new(env)
+    end
 
-        @app.call(env)
-      else Rack::Response.new('Not Found', 404).finish
+    def response(env)
+      case @request.path
+      when Rack::Response.new('Not Found', 404)
+      when '/outgoing' then outgoing(env)
+      # when '/statistics' then Rack::Response.new(render('statistics.html.haml')).finish
+      # when '/rules' then Rack::Response.new(render('rules.html.haml')).finish
+      # when '/game'
+      # else Rack::Response.new('Not Found', 404)
       end
+    end
+
+    def outgoing(env)
+      Game.call(env)
     end
 
     private

@@ -7,5 +7,11 @@ gem 'haml', '~> 5.2', '>= 5.2.2'
 gem 'pry', '~> 0.14.1'
 gem 'puma', '~> 5.5.2'
 gem 'rack'
-gem 'rake', '~> 13.0.6'
-gem 'rubocop-rspec', '~> 2.6.0'
+
+group :test do
+  gem 'fasterer', '~> 0.9.0'
+  gem 'rack-test', '~> 1.1.0'
+  gem 'rspec', '~> 3.10.0'
+  gem 'rubocop-rspec', '~> 2.6.0'
+  gem 'simplecov', '~> 0.21.2'
+end

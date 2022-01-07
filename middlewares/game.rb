@@ -31,7 +31,7 @@ module Middlewares
     end
 
     def render(template)
-      path = File.expand_path("../../app/views/#{template}", __FILE__)
+      path = File.expand_path("../app/views/#{template}", __dir__)
       Haml::Engine.new(File.read(path)).render(binding)
     end
 

@@ -3,9 +3,11 @@
 require_relative 'autoload'
 
 use Rack::Reloader
-use Rack::Static, :urls => %w[/assets/css /assets/images /assets/js /assets]
+use Rack::Static, :urls => %w[/assets/css /assets/images /assets/js /assets /app/views]
 use Rack::Session::Cookie, :key => 'rack.session',
     :path => '/',
-    :expire_after => 2592000
+    :expire_after => 2592000,
+    :secret => 'very_big_secret'
 
 run Middlewares::Game
+# run Rack::Cascade.new([Rack::File.new('app/views'), Middlewares::Game])
