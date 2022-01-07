@@ -17,6 +17,7 @@ module Middlewares
       when '/create_game' then create_game
       when '/submit_answer' then submit_answer
       when '/play_again' then play_again
+      when '/hint' then hint
       else Rack::Response.new('Not Found', 404)
       end
     end
@@ -53,6 +54,7 @@ module Middlewares
       @request.session[:attempts] = attempts
       @request.session[:hints] = hints
       @request.session[:answer] = %w[x x x x]
+      @request.session[:hint] = Array.new(hints) { 'x' }
       redirect('game')
     end
 
@@ -90,6 +92,13 @@ module Middlewares
     def play_again
       @request.session.clear
       redirect
+    end
+
+    def hint
+      return redirect('game') if @request.session[:game].hints == 0
+      one_hint = @request.session[:game].hint
+      @request.session[:hint][@request.session[:hint].index('x')] = one_hint
+      redirect('game')
     end
   end
 end
