@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Middlewares
   class Game
     def self.call(env)
@@ -8,6 +10,7 @@ module Middlewares
       @request = Rack::Request.new(env)
     end
 
+    # rubocop:disable Metrics
     def response
       case @request.path
       when '/' then home
@@ -21,6 +24,7 @@ module Middlewares
       else Rack::Response.new('Not Found', 404)
       end
     end
+    # rubocop:enable Metrics
 
     def redirect(address = '')
       Rack::Response.new { |response| response.redirect("/#{address}") }
@@ -42,7 +46,8 @@ module Middlewares
 
       if @request.session.key?('game') && @request.session['game'].attempts_left.positive?
         Rack::Response.new(render('game.html.haml'))
-      else redirect
+      else
+        redirect
       end
     end
 
@@ -68,25 +73,25 @@ module Middlewares
 
     def submit_answer
       @request.session['game'].compare(@request.params['number'])
-      while @request.session['game'].instance_variable_get("@response").size != 4
-        @request.session['game'].instance_variable_get("@response") << "x"
+      while @request.session['game'].instance_variable_get('@response').size != 4
+        @request.session['game'].instance_variable_get('@response') << 'x'
       end
-      @request.session[:answer] = @request.session['game'].instance_variable_get("@response")
+      @request.session[:answer] = @request.session['game'].instance_variable_get('@response')
       win || lose || redirect('game')
     end
 
     def win
-      if @request.session['game'].instance_variable_get("@response") == %w[+ + + +]
-        @request.session[:win] = 'true'
-        Rack::Response.new(render('win.html.haml'))
-      end
+      return unless @request.session['game'].instance_variable_get('@response') == %w[+ + + +]
+
+      @request.session[:win] = 'true'
+      Rack::Response.new(render('win.html.haml'))
     end
 
     def lose
-      unless @request.session['game'].attempts_left.positive?
-        @request.session[:win] = 'false'
-        Rack::Response.new(render('lose.html.haml'))
-      end
+      return if @request.session['game'].attempts_left.positive?
+
+      @request.session[:win] = 'false'
+      Rack::Response.new(render('lose.html.haml'))
     end
 
     def play_again
@@ -95,7 +100,8 @@ module Middlewares
     end
 
     def hint
-      return redirect('game') if @request.session[:game].hints == 0
+      return redirect('game') if @request.session[:game].hints.zero?
+
       one_hint = @request.session[:game].hint
       @request.session[:hint][@request.session[:hint].index('x')] = one_hint
       redirect('game')

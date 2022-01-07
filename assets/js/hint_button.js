@@ -1,3 +1,5 @@
+function hint_get() { location.href = '/hint'; }
+
 window.addEventListener("DOMContentLoaded", function hint_button() {
   let hint = document.getElementById("hints_count").innerText;
   let hint_button = document.getElementById("hint_button");

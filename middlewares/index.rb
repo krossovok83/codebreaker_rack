@@ -5,6 +5,7 @@ module Middlewares
     def initialize(app)
       @app = app
     end
+
     def call(env)
       request = Rack::Request.new(env)
       case request.path
