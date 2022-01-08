@@ -14,4 +14,5 @@ group :test do
   gem 'rspec', '~> 3.10.0'
   gem 'rubocop-rspec', '~> 2.6.0'
   gem 'simplecov', '~> 0.21.2'
+  gem 'overcommit', '~> 0.58.2'
 end

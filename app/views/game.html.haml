@@ -20,9 +20,9 @@
               .col-md-auto
                 %h1.text-white.title Codebreaker 2022
             %p.lead.text-white-70
-              Hello, #{@request.session['name']}
+              Hello, #{@session['name']}
               %br/
-              Code - #{@request.session['game'].code.join}
+              Code - #{@session['game'].code.join}
               %br/
               Try to guess 4-digit number, that consists of numbers in a range from 1 to 6.
             %hr.mb-4/
@@ -31,15 +31,15 @@
                 %button.btn.btn-primary{disabled: "disabled", type: "button"}
                   Level:
                   %span.badge.badge-light
-                  = @request.session['level']
+                  = @session['level']
               .col.text-center.button
                 %button.btn.btn-primary{disabled: "disabled", type: "button"}
                   Attempts (left/total):
-                  %span.badge.badge-light #{@request.session['game'].attempts_left}/#{@request.session['attempts']}
+                  %span.badge.badge-light #{@session['game'].attempts_left}/#{@session['attempts']}
               .col.button
                 %button.btn.btn-primary.float-right{disabled: "disabled", type: "button"}
                   Hints (left/total):
-                  %span.badge.badge-light{id: "hints_count"} #{@request.session['game'].hints}/#{@request.session['hints']}
+                  %span.badge.badge-light{id: "hints_count"} #{@session['game'].hints}/#{@session['hints']}
             %hr.mb-6/
             %form{action: "http://localhost:9292/submit_answer", method: "get"}
               .form-group
@@ -47,16 +47,16 @@
                   %input.form-control.guess_input{autocomplete: "off", name: "number", pattern: "^[1-6]{4}$", placeholder: "0000", required: ""}/
               .form-group.guess_markers_list
                 #guess_marker
-                  %button.btn.btn-danger.marks{disabled: "disabled", type: "button", id: "answer_1"} #{@request.session['answer'][0]}
-                  %button.btn.btn-danger.marks{disabled: "disabled", type: "button", id: "answer_2"} #{@request.session['answer'][1]}
-                  %button.btn.btn-danger.marks{disabled: "disabled", type: "button", id: "answer_3"} #{@request.session['answer'][2]}
-                  %button.btn.btn-danger.marks{disabled: "disabled", type: "button", id: "answer_4"} #{@request.session['answer'][3]}
+                  %button.btn.btn-danger.marks{disabled: "disabled", type: "button", id: "answer_1"} #{@session['answer'][0]}
+                  %button.btn.btn-danger.marks{disabled: "disabled", type: "button", id: "answer_2"} #{@session['answer'][1]}
+                  %button.btn.btn-danger.marks{disabled: "disabled", type: "button", id: "answer_3"} #{@session['answer'][2]}
+                  %button.btn.btn-danger.marks{disabled: "disabled", type: "button", id: "answer_4"} #{@session['answer'][3]}
               %hr.mb-4/
               %button.btn.btn-primary.btn-lg{type: "submit"}
                 Submit
               %button.btn.btn-warning.btn-lg.float-right{type: "button", id: "hint_button", onclick: " hint_get()"}
                 Show hint!
                 %span.badge.badge-light{id: "hint_1"}
-                  = @request.session['hint'].first
+                  = @session['hint'].first
                 %span.badge.badge-light{id: "hint_2"}
-                  = @request.session['hint'].last
+                  = @session['hint'].last

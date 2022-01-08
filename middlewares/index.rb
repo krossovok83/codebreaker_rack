@@ -17,7 +17,7 @@ module Middlewares
       # when '/statistics' then Rack::Response.new(render('statistics.html.haml')).finish
       # when '/rules' then Rack::Response.new(render('rules.html.haml')).finish
       # when '/game'
-      # else Rack::Response.new('Not Found', 404)
+      else Rack::Response.new('Not Found', 404)
       end
     end
 

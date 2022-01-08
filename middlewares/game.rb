@@ -8,6 +8,8 @@ module Middlewares
 
     def initialize(env)
       @request = Rack::Request.new(env)
+      @session = @request.session
+      @params = @request.params
     end
 
     # rubocop:disable Metrics
@@ -17,10 +19,10 @@ module Middlewares
       when '/game' then game
       when '/statistics' then Rack::Response.new(render('statistics.html.haml'))
       when '/rules' then Rack::Response.new(render('rules.html.haml'))
-      when '/create_game' then create_game
+      when '/create_game' then create_game && redirect('game')
       when '/submit_answer' then submit_answer
-      when '/play_again' then play_again
-      when '/hint' then hint
+      when '/play_again' then @session.clear && redirect
+      when '/hint' then hint && redirect('game')
       else Rack::Response.new('Not Found', 404)
       end
     end
@@ -31,20 +33,19 @@ module Middlewares
     end
 
     def render(template)
-      path = File.expand_path("../app/views/#{template}", __dir__)
-      Haml::Engine.new(File.read(path)).render(binding)
+      Haml::Engine.new(File.read(File.expand_path("../app/views/#{template}", __dir__))).render(binding)
     end
 
     def home
-      @request.session.key?('name') ? redirect('game') : Rack::Response.new(render('home.html.haml'))
+      @session.key?('name') ? redirect('game') : Rack::Response.new(render('home.html.haml'))
     end
 
     def game
-      return win if @request.session[:win] == 'true'
+      return win if @session[:win] == 'true'
 
-      return lose if @request.session[:win] == 'false'
+      return lose if @session[:win] == 'false'
 
-      if @request.session.key?('game') && @request.session['game'].attempts_left.positive?
+      if @session.key?('game') && @session['game'].attempts_left.positive?
         Rack::Response.new(render('game.html.haml'))
       else
         redirect
@@ -52,15 +53,14 @@ module Middlewares
     end
 
     def create_game
-      attempts, hints = difficulty(@request.params['level'])
-      @request.session[:game] = CodeBreaker.new(attempts, hints)
-      @request.session[:name] = @request.params['player_name'].capitalize
-      @request.session[:level] = @request.params['level']
-      @request.session[:attempts] = attempts
-      @request.session[:hints] = hints
-      @request.session[:answer] = %w[x x x x]
-      @request.session[:hint] = Array.new(hints) { 'x' }
-      redirect('game')
+      @session[:name] = @params['player_name'].capitalize
+      @session[:level] = @params['level']
+      attempts, hints = difficulty(@session['level'])
+      @session[:game] = CodeBreaker.new(attempts, hints)
+      @session[:attempts] = attempts
+      @session[:hints] = hints
+      @session[:answer] = %w[x x x x]
+      @session[:hint] = Array.new(hints) { 'x' }
     end
 
     def difficulty(level)
@@ -72,47 +72,41 @@ module Middlewares
     end
 
     def submit_answer
-      @request.session['game'].compare(@request.params['number'])
-      while @request.session['game'].instance_variable_get('@response').size != 4
-        @request.session['game'].instance_variable_get('@response') << 'x'
+      @session['game'].compare(@params['number'])
+      while @session['game'].instance_variable_get('@response').size != 4
+        @session['game'].instance_variable_get('@response') << 'x'
       end
-      @request.session[:answer] = @request.session['game'].instance_variable_get('@response')
+      @session[:answer] = @session['game'].instance_variable_get('@response')
       win || lose || redirect('game')
     end
 
     def win
-      return unless @request.session['game'].instance_variable_get('@response') == %w[+ + + +]
+      return unless @session['game'].instance_variable_get('@response') == %w[+ + + +]
 
-      @request.session[:win] = 'true'
+      @session[:win] = 'true'
       save_game
       Rack::Response.new(render('win.html.haml'))
     end
 
     def lose
-      return if @request.session['game'].attempts_left.positive?
+      return if @session['game'].attempts_left.positive?
 
-      @request.session[:win] = 'false'
+      @session[:win] = 'false'
       Rack::Response.new(render('lose.html.haml'))
     end
 
-    def play_again
-      @request.session.clear
-      redirect
-    end
-
     def hint
-      return redirect('game') if @request.session[:game].hints.zero?
+      return redirect('game') if @session[:game].hints.zero?
 
-      one_hint = @request.session[:game].hint
-      @request.session[:hint][@request.session[:hint].index('x')] = one_hint
-      redirect('game')
+      one_hint = @session[:game].hint
+      @session[:hint][@session[:hint].index('x')] = one_hint
     end
 
     def save_game
-      return if @request.session['saved'] == 'true'
+      return if @session['saved'] == 'true'
 
-      @request.session['saved'] = 'true'
-      @request.session['game'].save(@request.session['name'], @request.session['level'])
+      @session['saved'] = 'true'
+      @session['game'].save(@session['name'], @session['level'])
     end
 
     def statistics

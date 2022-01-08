@@ -22,15 +22,15 @@
                 %button.btn.btn-primary{disabled: "disabled", type: "button"}
                   Level:
                   %span.badge.badge-light
-                    = @request.session['level']
+                    = @session['level']
                 %button.btn.btn-primary{disabled: "disabled", type: "button"}
                   Attempts Left:
                   %span.badge.badge-light
-                    = "#{@request.session['game'].attempts_left}/#{@request.session['attempts']}"
+                    = "#{@session['game'].attempts_left}/#{@session['attempts']}"
                 %button.btn.btn-primary{disabled: "disabled", type: "button"}
                   Hints Left:
                   %span.badge.badge-light
-                    = "#{@request.session['game'].hints}/#{@request.session['hints']}"
+                    = "#{@session['game'].hints}/#{@session['hints']}"
             %hr.mb-4/
             .row
               .text-center
