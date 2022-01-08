@@ -93,7 +93,7 @@ DEPENDENCIES
   codebreaker!
   fasterer (~> 0.9.0)
   haml (~> 5.2, >= 5.2.2)
-  overcommit
+  overcommit (~> 0.58.0)
   pry (~> 0.14.1)
   puma (~> 5.5.2)
   rack
