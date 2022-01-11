@@ -47,10 +47,8 @@
                   %input.form-control.guess_input{autocomplete: "off", name: "number", pattern: "^[1-6]{4}$", placeholder: "0000", required: ""}/
               .form-group.guess_markers_list
                 #guess_marker
-                  %button.btn.btn-danger.marks{disabled: "disabled", type: "button", id: "answer_1"} #{@session['answer'][0]}
-                  %button.btn.btn-danger.marks{disabled: "disabled", type: "button", id: "answer_2"} #{@session['answer'][1]}
-                  %button.btn.btn-danger.marks{disabled: "disabled", type: "button", id: "answer_3"} #{@session['answer'][2]}
-                  %button.btn.btn-danger.marks{disabled: "disabled", type: "button", id: "answer_4"} #{@session['answer'][3]}
+                  - @session['answer'].each_with_index do |answer, index|
+                    %button.btn.btn-danger.marks{disabled: "disabled", type: "button", id: "answer_#{index+1}"} #{answer}
               %hr.mb-4/
               %button.btn.btn-primary.btn-lg{type: "submit"}
                 Submit

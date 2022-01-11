@@ -9,5 +9,11 @@ use Rack::Session::Cookie, :key => 'rack.session',
     :expire_after => 2592000,
     :secret => 'very_big_secret'
 
-run Middlewares::Game
+# run Middlewares::Game
 # run Rack::Cascade.new([Rack::File.new('app/views'), Middlewares::Game])
+app = Rack::Builder.new do
+  use Middlewares::Router
+  run Game
+end
+
+run app
