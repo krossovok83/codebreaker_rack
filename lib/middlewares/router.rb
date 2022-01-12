@@ -16,7 +16,7 @@ module Middlewares
       if REQUEST_PATHS.include? @request.path
         @app.call(env)
       else
-        Rack::Response.new('Not Found', 404)
+        Rack::Response.new('Not Found', 404).finish
       end
     end
   end

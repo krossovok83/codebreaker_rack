@@ -18,7 +18,7 @@ class Game
     when '/game' then game || redirect
     when '/statistics' then session? ? Rack::Response.new(render('statistics.html.haml')) : redirect('game')
     when '/rules' then session? ? Rack::Response.new(render('rules.html.haml')) : redirect('game')
-    when '/create_game' then create_game && redirect('game')
+    when '/create_game' then check_for_create_game
     when '/submit_answer' then session? || @params['number'].nil? ? redirect : submit_answer
     when '/play_again' then session? ? redirect : @session.clear && redirect
     when '/hint' then session? ? redirect : hint && redirect('game')
@@ -40,7 +40,7 @@ class Game
   end
 
   def home
-    session? ? redirect('game') : Rack::Response.new(render('home.html.haml'))
+    session? ? Rack::Response.new(render('home.html.haml')) : redirect('game')
   end
 
   def game
@@ -49,6 +49,11 @@ class Game
     return lose if @session[:win] == 'false'
 
     Rack::Response.new(render('game.html.haml')) if @session.key?('game') && @session['game'].attempts_left.positive?
+  end
+
+  def check_for_create_game
+    redirect('game') unless session?
+    @params['player_name'].nil? ? redirect : create_game && redirect('game')
   end
 
   def create_game
