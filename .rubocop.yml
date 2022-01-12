@@ -30,4 +30,4 @@ AllCops:
   NewCops: enable
   Exclude:
     - 'config.ru'
-#    - './middlewares/*'
+    - '/circleci/*'
