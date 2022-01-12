@@ -14,7 +14,6 @@ class Game
   # rubocop:disable Metrics
   def response
     case @request.path
-    when '/' then home
     when '/game' then game || redirect
     when '/statistics' then session? ? Rack::Response.new(render('statistics.html.haml')) : redirect('game')
     when '/rules' then session? ? Rack::Response.new(render('rules.html.haml')) : redirect('game')
@@ -22,7 +21,9 @@ class Game
     when '/submit_answer' then session? || @params['number'].nil? ? redirect : submit_answer
     when '/play_again' then session? ? redirect : @session.clear && redirect
     when '/hint' then session? ? redirect : hint && redirect('game')
-    else Rack::Response.new('Not Found', 404)
+    when '/win' then @session[:win] == 'true' ? Rack::Response.new(render('win.html.haml')) : redirect
+    when '/lose' then @session[:win] == 'false' ? Rack::Response.new(render('lose.html.haml')) : redirect
+    else home
     end
   end
   # rubocop:enable Metrics
@@ -89,14 +90,14 @@ class Game
 
     @session[:win] = 'true'
     save_game
-    Rack::Response.new(render('win.html.haml'))
+    redirect('win')
   end
 
   def lose
     return if @session['game'].attempts_left.positive?
 
     @session[:win] = 'false'
-    Rack::Response.new(render('lose.html.haml'))
+    redirect('lose')
   end
 
   def hint

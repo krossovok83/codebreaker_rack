@@ -12,6 +12,11 @@ GAME_GROUP = {
   hint: '/hint',
   play_again: '/play_again'
 }.freeze
+END_GAME = {
+  win: '/win',
+  lose: '/lose'
+}.freeze
+FILE = 'test.yml'
 
 RSpec.describe Game do
   include Rack::Test::Methods
@@ -46,18 +51,81 @@ RSpec.describe Game do
       end
     end
 
-    context 'when game init' do
-      before do
-        get '/create_game', 'player_name' => 'Test', 'level' => 'simple'
+    it 'redirect from win/lose' do
+      END_GAME.each_value do |address|
+        get address
+        expect(last_response).to be_redirect
+        expect(last_response.header['Location']).to eq('/')
       end
+    end
+  end
 
-      it 'redirect to game page' do
-        NO_GAME_GROUP.each_value do |address|
-          get address
-          expect(last_response).to be_redirect
-          expect(last_response.header['Location']).to eq('/game')
-        end
+  context 'when game init' do
+    before do
+      get GAME_GROUP[:create], 'player_name' => 'Test', 'level' => 'simple'
+    end
+
+    it 'redirect to game page' do
+      NO_GAME_GROUP.each_value do |address|
+        get address
+        expect(last_response).to be_redirect
+        expect(last_response.header['Location']).to eq('/game')
       end
+    end
+
+    it 'redirect from win/lose' do
+      END_GAME.each_value do |address|
+        get address
+        expect(last_response).to be_redirect
+        expect(last_response.header['Location']).to eq('/')
+      end
+    end
+  end
+
+  context 'when lose' do
+    before do
+      get GAME_GROUP[:create], 'player_name' => 'Test', 'level' => 'hard'
+    end
+
+    it '5 times wrong answer' do
+      5.times do
+        get "#{GAME_GROUP[:submit]}?number=1111"
+      end
+      expect(last_response).to be_redirect
+      expect(last_response.header['Location']).to eq('/lose')
+    end
+  end
+
+  context 'when win' do
+    let(:yaml) { YAML.safe_load(File.read(FILE)) }
+
+    before do
+      File.open(FILE, 'a')
+      get GAME_GROUP[:create], 'player_name' => 'Test', 'level' => 'middle'
+    end
+
+    after do
+      File.delete(FILE) if File.exist?(FILE)
+    end
+
+    it 'correct answer' do
+      allow(File).to receive(:open).and_return(yaml)
+      get "#{GAME_GROUP[:submit]}?number=#{last_request.env['rack.session']['game'].code.join}"
+      expect(last_response).to be_redirect
+      expect(last_response.header['Location']).to eq('/win')
+    end
+  end
+
+  context 'when hint' do
+    before do
+      get GAME_GROUP[:create], 'player_name' => 'Test', 'level' => 'simple'
+    end
+
+    it 'get hint' do
+      get GAME_GROUP[:hint]
+      expect(last_response).to be_redirect
+      expect(last_response.header['Location']).to eq('/game')
+      expect(last_request.env['rack.session']['game'].hints).to eq(1)
     end
   end
 end
