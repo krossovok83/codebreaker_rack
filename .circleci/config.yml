@@ -1,0 +1,66 @@
+version: 2.1
+
+executors:
+  default:
+    working_directory: ~/repo
+    description: The official CircleCI Ruby Docker Image
+    docker:
+      - image: circleci/ruby:3.0.2
+
+caches:
+  - &bundle_cache_full v2-repo-{{ checksum "Gemfile.lock" }}
+  - &bundle_cache v2-repo-
+
+commands:
+  defaults:
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - *bundle_cache_full
+            - *bundle_cache
+      #      - run: gem install bundler:2.2.32
+      - run: bundle install
+      - save_cache:
+          key: *bundle_cache_full
+          paths:
+            - vendor/bundle
+  run_specs:
+    description: commands to start tests
+    steps:
+      - run:
+          name: run specs
+          command: bundle exec rspec
+
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.6.3-stretch-node
+    executor: ruby/default
+    steps:
+      - checkout
+      - run:
+          name: Force Bundler Version
+          command: |
+            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
+            source $BASH_ENV
+            gem install bundler
+      - run:
+          name: Which bundler?
+          command: bundle -v
+      - ruby/bundle-install
+  run_spec:
+    executor: default
+    steps:
+      - defaults
+      - run_specs
+
+orbs:
+  ruby: circleci/ruby@0.1.2
+
+workflows:
+  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
+    # Inside the workflow, you define the jobs you want to run.
+    jobs:
+      - build
+      - run_spec

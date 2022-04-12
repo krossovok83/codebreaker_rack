@@ -1,0 +1,8 @@
+{
+  "name": "codebreaker_rack",
+  "version": "1.0.0",
+  "dependencies": {},
+  "devDependencies": {
+    "jquery": "^3.6.0"
+  }
+}
